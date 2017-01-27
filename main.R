@@ -9,19 +9,19 @@ library(xml2)
 #=======BASIC INFO ABOUT THE CJ EXTRACTOR========#
 
 ##This file serves as the extractor for Commissions from CJ.com
-source("devel.r")
+#source("devel.r")
 
 #=======CONFIGURATION========#
 ## initialize application
-#library('keboola.r.docker.application')
-# app <- DockerApplication$new('/data/')
-# 
-# app$readConfig()
+library('keboola.r.docker.application')
+app <- DockerApplication$new('/data/')
+
+app$readConfig()
 
 ## access the supplied value of 'myParameter'
-# authorization<-app$getParameters()$`#authorization`
-# date.type<-app$getParameters()$datetype
-# time.frame<-app$getParameters()$timeframe
+authorization<-app$getParameters()$`#authorization`
+date.type<-app$getParameters()$datetype
+time.frame<-app$getParameters()$timeframe
 
 ##Catch config errors
 
@@ -94,7 +94,7 @@ res<-try(callAPI(intervals, authorization, args))
 
 ###Export the data
 
-#write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE)
+write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE)
 
 # authorization : your API KEY
 # date-type : event|posting
