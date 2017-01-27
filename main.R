@@ -71,7 +71,7 @@ callAPI<-function(intervals,apikey,date.type){
       for(i in 1:dim(res2)[1]){
          
         for(j in 1:dim(res2)[2]){
-          res2[i,j]<-ifelse(is.null(unlist(res2[i,j])),"NA",unlist(res2[i,j]))
+          res2[i,j]<-ifelse(is.null(unlist(res2[i,j])),"NA",as.character(unlist(res2[i,j])))
         }
           
       }
@@ -81,18 +81,18 @@ callAPI<-function(intervals,apikey,date.type){
       }
     data<-bind_rows(data,results)
   }
+  
  data
 }
 
 args<-date.type
 
 intervals<-getIntervals(time.frame)
-res<-callAPI(intervals, authorization, args)
+res<-callAPI(intervals, authorization, args)%>%mutate_all(as.character)
 
 
 ###Export the data
-
-write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE)
+write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE, quote = TRUE)
 
 # authorization : your API KEY
 # date-type : event|posting
