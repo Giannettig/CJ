@@ -65,7 +65,7 @@ callAPI<-function(intervals,apikey,date.type){
     results<-if(r$status_code==200) {
       res<-xml2::as_list(content(r,"parsed",encoding = "UTF-8")) 
       names<-names(res$commissions[[1]])
-      res2<-as.data.frame(t(rbindlist(res,fill = TRUE)))
+      res2<-as.data.frame(t(rbindlist(res)))
       rownames(res2) <- c()
       names(res2)<-names
       for(i in 1:dim(res2)[1]){
