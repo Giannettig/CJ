@@ -60,7 +60,7 @@ callAPI<-function(intervals,apikey,date.type){
   for(i in 1:dim(intervals)[1]){
     updatedargs<-list("start-date"=intervals$start.date[i],"end-date"=intervals$end.date[i],"date-type"=date.type)
     
-    r <- RETRY("GET",endpoint, times=3, query=updatedargs, add_headers(authorization = apikey))
+    r <- RETRY("GET",endpoint, times=3,pause_base = 3,pause_cap = 10, query=updatedargs, add_headers(authorization = apikey))
     
     results<-if(r$status_code==200) {
       res<-xml2::as_list(content(r,"parsed",encoding = "UTF-8")) 
@@ -77,20 +77,17 @@ callAPI<-function(intervals,apikey,date.type){
       }
       res2
     }else {
-      stop(paste("API Call n.",call,"failed. status:",content(r)$status, sep=" "),call.=TRUE)}
-    
+      stop(paste("API Call n.",call,"failed. status:",content(r)$status, sep=" "),call.=TRUE)
+      }
     data<-bind_rows(data,results)
-    
-    #Sys.sleep(3)
-    
   }
-  
+ data
 }
 
 args<-date.type
 
 intervals<-getIntervals(time.frame)
-res<-try(callAPI(intervals, authorization, args))
+res<-callAPI(intervals, authorization, args)
 
 
 ###Export the data
