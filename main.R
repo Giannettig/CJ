@@ -5,22 +5,29 @@ library(data.table)
 library(dplyr)
 library(xml2)
 #library(purrr)
-library('keboola.r.docker.application')
+
 #=======BASIC INFO ABOUT THE CJ EXTRACTOR========#
 
 ##This file serves as the extractor for Commissions from CJ.com
-#source("devel.r")
+source("devel.r")
 
 #=======CONFIGURATION========#
 ## initialize application
-app <- DockerApplication$new('/data/')
-
-app$readConfig()
+#library('keboola.r.docker.application')
+# app <- DockerApplication$new('/data/')
+# 
+# app$readConfig()
 
 ## access the supplied value of 'myParameter'
-authorization<-app$getParameters()$`#authorization`
-date.type<-app$getParameters()$datetype
-time.frame<-app$getParameters()$timeframe
+# authorization<-app$getParameters()$`#authorization`
+# date.type<-app$getParameters()$datetype
+# time.frame<-app$getParameters()$timeframe
+
+##Catch config errors
+
+if(is.null(authorization)) stop("please enter you developer  key in the #Authorization config field")
+if(is.null(date.type)) stop("datetype config field is missing")
+if(is.null(time.frame)) stop("timeframe config missing")
 
 ###Functions
 
@@ -58,10 +65,16 @@ callAPI<-function(intervals,apikey,date.type){
     results<-if(r$status_code==200) {
       res<-xml2::as_list(content(r,"parsed",encoding = "UTF-8")) 
       names<-names(res$commissions[[1]])
-      res2<-t(rbindlist(res))
-      res3<-mutate_all(as.data.frame(res2),unlist)
-      names(res3)<-names
-      res3
+      res2<-as.data.frame(t(rbindlist(res,fill = TRUE)))
+      rownames(res2) <- c()
+      names(res2)<-names
+      for(i in 1:dim(res2)[1]){
+         
+        for(j in 1:dim(res2)[2]){
+          res2[i,j]<-ifelse(is.null(unlist(res2[i,j])),"NA",unlist(res2[i,j]))
+        }
+          
+      }
     }else {
       stop(paste("API Call n.",call,"failed. status:",content(r)$status, sep=" "),call.=TRUE)}
     
@@ -81,7 +94,7 @@ res<-try(callAPI(intervals, authorization, args))
 
 ###Export the data
 
-write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE)
+#write.csv(as.matrix(res),"out/tables/cj-results.csv", row.names=FALSE)
 
 # authorization : your API KEY
 # date-type : event|posting
