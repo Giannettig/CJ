@@ -75,6 +75,7 @@ callAPI<-function(intervals,apikey,date.type){
         }
           
       }
+      res2
     }else {
       stop(paste("API Call n.",call,"failed. status:",content(r)$status, sep=" "),call.=TRUE)}
     
