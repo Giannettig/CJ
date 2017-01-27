@@ -32,7 +32,7 @@ callAPI<-function(intervals,apikey,date.type){
   
   endpoint<-"https://commission-detail.api.cj.com/v3/commissions"
   
-  data<-data_frame()
+  data<-data.frame()
   
   for(i in 1:dim(intervals)[1]){
   updatedargs<-list("start-date"=intervals$start.date[i],"end-date"=intervals$end.date[i],"date-type"=date.type)
@@ -50,6 +50,8 @@ callAPI<-function(intervals,apikey,date.type){
     stop(paste("API Call n.",call,"failed. status:",content(r)$status, sep=" "),call.=TRUE)}
   
   data<-bind_rows(data,results)
+  
+  #Sys.sleep(3)
   
   }
   

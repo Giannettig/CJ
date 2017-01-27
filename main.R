@@ -6,20 +6,20 @@
 source("functions.r")
 
 #=======CONFIGURATION========#
-# ## initialize application
-# app <- DockerApplication$new('/data/')
-# 
-# app$readConfig()
-# 
-# ## access the supplied value of 'myParameter'
-# authorization<-app$getParameters()$authorization
-# date.type<-app$getParameters()$datetype
-# time.frame<-app$getParameters()$timeframe
+## initialize application
+app <- DockerApplication$new('/data/')
+
+app$readConfig()
+
+## access the supplied value of 'myParameter'
+authorization<-app$getParameters()$`#authorization`
+date.type<-app$getParameters()$datetype
+time.frame<-app$getParameters()$timeframe
 
 args<-date.type
 
 intervals<-getIntervals(time.frame)
-res<-callAPI(intervals, authorization, args)
+res<-try(callAPI(intervals, authorization, args))
 
 
 ###Export the data
