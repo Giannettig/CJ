@@ -5,7 +5,6 @@ library(data.table)
 library(dplyr)
 library(xml2)
 library(purrr)
-source("functions.r")
 library('keboola.r.docker.application')
 
 ##Returns the time intervals for the API call

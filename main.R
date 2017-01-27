@@ -3,7 +3,7 @@
 
 ##This file serves as the extractor for Commissions from CJ.com
 #source("devel.r")
-source("functions.r")
+source("functions.R")
 
 #=======CONFIGURATION========#
 ## initialize application
